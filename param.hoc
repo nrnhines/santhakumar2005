@@ -1,0 +1,3 @@
+{load_file("defvar.hoc")}
+
+default_var("mytstop", 300)

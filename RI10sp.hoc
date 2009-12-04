@@ -9,7 +9,7 @@ secondorder=2
 tstep=0
 period=2
 dt=0.1
-tstop=300	//1500
+tstop=mytstop	//1500
 
 // define network size
 ngcell = 500
@@ -1553,7 +1553,7 @@ xvalue("Continue for","runStopIn", 1,"{continuerun(t + runStopIn) stoprun=1}", 1
 xbutton("Single Step","steprun()")
 t = 0
 xvalue("t","t", 2 )
-tstop = 300	//1500
+tstop = mytstop	//1500
 xvalue("Tstop","tstop", 1,"tstop_changed()", 0, 1 )
 dt = 0.1
 xvalue("dt","dt", 1,"setdt()", 0, 1 )
