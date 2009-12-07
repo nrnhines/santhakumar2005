@@ -1,3 +1,5 @@
+totaltime = startsw()
 {load_file("nrngui.hoc")}
 {load_file("param.hoc")}
 {load_file("RI10sp.hoc")}
+printf("total time = %g\n", startsw() - totaltime)
