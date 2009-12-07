@@ -1027,6 +1027,7 @@ ropen("/proc/uptime")		// get a seed  that is changing based on the processing t
  	rseed = fscan()		// so simulation will not start with the same seed
 	ropen()		
 	}
+rseed = 1 // allow reproducibility for serial runs
 //************************************GC***********************************************
 rdgc2bc = new Random(rseed)			// use for syn.connections 
 proc new_rdgc2bc() {rdgc2bc.discunif(-1,1)}

@@ -1,0 +1,22 @@
+load_file("nrngui.hoc")
+
+objref grspk
+proc spkplt() {localobj x, y
+	clipboard_retrieve($s1)
+	printf("read %d spikes\n", hoc_obj_[1].size)
+	x = hoc_obj_[1]
+	y = hoc_obj_[0]
+	grspk.size(x.min, x.max, y.min, y.max)
+	y.mark(grspk, x, "|", 5, $2, $3)
+}
+
+proc showstdspk() {
+	grspk = new Graph()
+	spkplt("S2I10sp.std",2,4)
+}
+
+showstdspk()
+
+proc p() {
+	spkplt($s1,1,2)
+}
