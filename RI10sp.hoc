@@ -4,7 +4,6 @@
 
 // The synaptic parameters need to be checked
 
-
 secondorder=2 
 tstep=0
 period=2
@@ -1074,7 +1073,7 @@ objref vbc2gc, vmc2gc, vhc2gc, vgc2bc, vbc2bc, vmc2bc, vhc2bc, vgc2mc, vbc2mc, v
 
 objref rdsynb, rdsyna, rdgc2hc, rdgc2bc, rdgc2mc, rdbc2gc, rdbc2bc, rdbc2mc
 objref rdmc2gc1, rdmc2gc2, rdmc2bc, rdmc2mc, rdmc2mc1, rdmc2hc, rdhc2gc, rdhc2bc, rdhc2mc, rdgc2gc
-ropen("/proc/uptime")		// get a seed  that is changing based on the processing time
+{ropen("/proc/uptime")}		// get a seed  that is changing based on the processing time
 	 {			
  	rseed = fscan()		// so simulation will not start with the same seed
 	ropen()		
@@ -1172,8 +1171,8 @@ for i=0, npp-1 {
 //	if ((is_connected(MossyCell[npost-ngcell-nbcell], PPstim[0]) == 0) && (npost < ngcell+nbcell+3)) {
 	if ((is_connected(idMossyCell, npost-ngcell-nbcell, idPPstim, 0) == 0) && (npost < ngcell+nbcell+3)) {
 	nc_append(ngcell+nbcell+nmcell+nhcell, npost, dbr, 0.5e-2, 3, 10)  // Gcell[3] to Bcell[1]
-	print npost, dbr
-	} else {	j -= 1	print "pp2mc"}
+	//print npost, dbr
+	} else {	j -= 1	}//print "pp2mc"}
 	}
 
 }
@@ -1198,13 +1197,13 @@ for  i=0, ngcell-1 {
 	if (a+Gauz3 < 0) {npost = a+Gauz3+6} 
 	if ((a+Gauz3 > -1) && (a+Gauz3 < 6)) {npost = a+Gauz3}
 	dbr = rdsynb.repick()
-	print npost, a
+	//print npost, a
 //	if ((is_connected(BasketCell[npost], GranuleCell[i]) == 0) && (vgc2bc.x[npost] < 180))  {
 	if ((is_connected(idBasketCell, npost, idGranuleCell, i) == 0) && (vgc2bc.x[npost] < 180))  {
 	nc_append(i, ngcell+npost, dbr+2, 4.7e-3, .8, 10)  // Gcell[3] to Bcell[1]
-	print i, npost, dbr+2
+	//print i, npost, dbr+2
 	vgc2bc.x[npost]  +=1
-	} else {j -= 1	print "sdtf"}
+	} else {j -= 1}//	print "sdtf"}
 	}
 
 	for j=0, 0 {
@@ -1220,9 +1219,9 @@ for  i=0, ngcell-1 {
 //	if ((is_connected(MossyCell[npost+b], GranuleCell[i]) == 0) && (vgc2mc.x[npost+b] < 38)){
 	if ((is_connected(idMossyCell, npost+b, idGranuleCell, i) == 0) && (vgc2mc.x[npost+b] < 38)){
 	nc_append(i, ngcell+nbcell+npost+b, dbr+4, 0.2e-3, 1.5, 10)  // Gcell[3] to Bcell[1]
-	print npost+b, dbr+4
+	//print npost+b, dbr+4
 	vgc2mc.x[npost+b] +=1
-	} else {	j -= 1	print "mdtf"}
+	} else {	j -= 1	}//print "mdtf"}
 	}
 
 	for j=0, 2 {
@@ -1240,9 +1239,9 @@ for  i=0, ngcell-1 {
 //	if ((is_connected(HIPPCell[npost], GranuleCell[i]) == 0) && (vgc2hc.x[npost] < 270)) {
 	if ((is_connected(idHIPPCell, npost, idGranuleCell, i) == 0) && (vgc2hc.x[npost] < 270)) {
 	nc_append(i, ngcell+nbcell+nmcell+npost, dbr, 0.5e-3, 1.5, 10)  // Gcell[3] to Bcell[1]
-	print npost, dbr
+	//print npost, dbr
 	vgc2hc.x[npost] +=1
-	} else {j -= 1	print "hhhh"}
+	} else {j -= 1	}//print "hhhh"}
 	}
 
 	for j=0, 9 {
@@ -1256,9 +1255,9 @@ for  i=0, ngcell-1 {
 //	if ((is_connected(GranuleCell[npost], GranuleCell[i]) == 0) && (vgc2gc.x[npost] < 15)) {
 	if ((is_connected(idGranuleCell, npost, idGranuleCell, i) == 0) && (vgc2gc.x[npost] < 15)) {
 	nc_append(i, npost, dbr+7, 2e-3, .8, 10)  // Gcell[3] to Bcell[1]
-	print npost, dbr+8
+	//print npost, dbr+8
 	vgc2gc.x[npost] +=1
-	} else {j -= 1	print "gc2gc"}
+	} else {j -= 1	}//print "gc2gc"}
 	}
 }
 //******************************************************************************************
@@ -1317,18 +1316,18 @@ for  i=0, nmcell-1 {
 	
 		for j=0, 99 {
 	 Gauz1 = rdmc2gc1.repick()
-print Gauz1
+//print Gauz1
 	if (i*33+17+Gauz1 > 499) {
 	 npost1 = i*33+17+Gauz1-500
 	} else {npost1 =i*33+17+Gauz1}
-print npost1
+//print npost1
 	dbr = rdsyna.repick()
 //	if ((is_connected(GranuleCell[npost1], MossyCell[i]) == 0) && (vmc2gc.x[npost1] < 7))  {
 	if ((is_connected(idGranuleCell, npost1, idMossyCell, i) == 0) && (vmc2gc.x[npost1] < 7))  {
 	nc_append(i+ngcell+nbcell, npost1, dbr+2, 0.3e-3, 3, 10)  // Gcell[3] to Bcell[1]
 	vmc2gc.x[npost1] +=1
-	print i, npost1, dbr+2
-	} else {j -= 1	print "MC2GC1"}
+	//print i, npost1, dbr+2
+	} else {j -= 1	}//print "MC2GC1"}
 	}
 		for j=0, 99 {
 	 Gauz2 = rdmc2gc2.repick()
@@ -1342,8 +1341,8 @@ print npost1
 	if ((is_connected(idGranuleCell, npost2, idMossyCell, i) == 0) && (vmc2gc.x[npost2] < 7))  {
 	nc_append(i+ngcell+nbcell, npost2, dbr+2, 0.3e-3, 3, 10)  // Gcell[3] to Bcell[1]
 	vmc2gc.x[npost2] +=1
-	print i, npost2, dbr+2
-	} else {j -= 1	print "MC2GC2"}
+	//print i, npost2, dbr+2
+	} else {j -= 1	}//print "MC2GC2"}
 	}
 
 	for j=0, 0 {
@@ -1355,9 +1354,9 @@ print npost1
 //	if ((is_connected(BasketCell[npost], MossyCell[i]) == 0) && (vmc2bc.x[npost] < 4) && (Gauz3 !=0)) {
 	if ((is_connected(idBasketCell, npost, idMossyCell, i) == 0) && (vmc2bc.x[npost] < 4) && (Gauz3 !=0)) {
 	nc_append(i+ngcell+nbcell, ngcell+npost, dbr+6, 0.3e-3, 3, 10)  // Gcell[3] to Bcell[1]
-	print npost, dbr+6
+	//print npost, dbr+6
 	vmc2bc.x[npost] += 1
-	} else {j -= 1	print "mc2bc"}
+	} else {j -= 1	}//print "mc2bc"}
 	}
 
 	for j=0, 2 {
@@ -1371,9 +1370,9 @@ print npost1
 //	if ((is_connected(MossyCell[npost], MossyCell[i]) == 0) && (vmc2mc.x[npost] < 4) && (Gauz3 != 0))  {
 	if ((is_connected(idMossyCell, npost, idMossyCell, i) == 0) && (vmc2mc.x[npost] < 4) && (Gauz3 != 0))  {
 	nc_append(i+ngcell+nbcell, npost+ngcell+nbcell, dbr+8, 0.5e-3, 2, 10)  // Gcell[3] to Bcell[1]
-	print npost, dbr+8
+	//print npost, dbr+8
 	vmc2mc.x[npost] +=1
-	} else {	j -= 1	print "mc2mc"}
+	} else {	j -= 1	}//print "mc2mc"}
 	}
 
 	for j=0, 1 {
@@ -1385,9 +1384,9 @@ print npost1
 //	if ((is_connected(HIPPCell[npost], MossyCell[i]) == 0) && (vmc2hc.x[npost] < 6) && (Gauz3 != 0))  {
 	if ((is_connected(idHIPPCell, npost, idMossyCell, i) == 0) && (vmc2hc.x[npost] < 6) && (Gauz3 != 0))  {
 	nc_append(i+ngcell+nbcell, ngcell+nbcell+nmcell+npost, dbr+4, 0.2e-3, 3, 10)  // Gcell[3] to Bcell[1]
-	print npost, dbr+4
+	//print npost, dbr+4
 	vmc2hc.x[npost] +=1
-	} else {	j -= 1	print y, Gauz3, "mc2hc"}
+	} else {	j -= 1	}//print y, Gauz3, "mc2hc"}
 	}
 
 
@@ -1454,15 +1453,14 @@ for i= 0, nhcell-1 {dfile.printf("%d\t%d\n", vgc2hc.x[i], vmc2hc.x[i])}
 dfile.printf("TO GC\n BC\t MC\t HC\t GC\n")
 for i= 0, ngcell-1 {dfile.printf("%d\t%d\t%d\t%d\n", vbc2gc.x[i], vmc2gc.x[i], vhc2gc.x[i], vgc2gc.x[i])}
 dfile.close()
-
 }
-
 
 //******************************************************************************************
 strdef strmat
 objref efile
+if (0) {
 efile = new File()
-
+{
 	efile.wopen("M2I10sp.txt")
 	efile.printf("t\t")
 	for i = 0, 49 {
@@ -1472,6 +1470,8 @@ efile = new File()
 	efile.printf("%s\t", cells.object[i])}
 	efile.printf("\n")
 	efile.close("M2I10sp.txt")
+}
+}
 
 proc sMatrix(){ local  j
 
@@ -1561,7 +1561,7 @@ dt= 10
 	// if cvode is on, turn it off to do large fixed step
 temp= cvode.active()
 if (temp!=0) {cvode.active(0)}
-while(t<-100) { fadvance() print t}
+while(t<-100) { fadvance() }//print t}
 	//restore cvode if reqd
 if (temp!=0) {cvode.active(1)}
 dt = dtsav
@@ -1583,8 +1583,8 @@ proc continuerun() {local rt
 	}
 	while(t < $1 && stoprun == 0) {
 	step()
-	sMatrix()
-	VecMx()
+	//sMatrix()
+	//VecMx()
 	rt = stopsw()
 	if (rt > realtime) {
 		realtime = rt
@@ -1669,8 +1669,8 @@ SpkMx()
 spkout()
 }
 
-rrun()
-plotAP()
+//rrun()
+//plotAP()
 
 objectvar scene_vector_[1]
 {doNotify()}

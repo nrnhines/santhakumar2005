@@ -6,4 +6,13 @@ objref pc
 pc = new ParallelContext()
 
 {load_file("RI10sp.hoc")}
-printf("total time = %g\n", startsw() - totaltime)
+
+setuptime = startsw()
+initNet()
+if (pc.id == 0) printf("setup time %g\n", startsw() - setuptime)
+runtime = startsw()
+run()
+if (pc.id == 0) printf("run time %g\n", startsw() - runtime)
+spkout()
+
+{printf("total time = %g\n", startsw() - totaltime)}
