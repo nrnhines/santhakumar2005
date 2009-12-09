@@ -27,6 +27,18 @@ idHIPPCell = idMossyCell + nmcell
 idPPstim = idHIPPCell + nhcell
 ncell = idPPstim + npp
 
+// round-robin iterator (gid, i)  
+iterator pcitr() {local i, gid
+        i = 0
+        for (gid = pc.id; gid < ncell; gid += pc.nhost) {
+                $&1 = gid
+                $&2 = i
+                iterator_statement
+                i += 1
+        }
+}
+
+
  // Define EPSCs---- using:
 //- an Exp2Syn object (parameters tau1 -rise, tau2 -decay, 
 // time constant [ms] and e - rev potential [mV]
@@ -975,8 +987,30 @@ objref nclist, netcon, cells, net_c, net_d, net_gr,  net_bc,  net_mc,  net_hc,  
 {  cells = new List()
 nclist = new List()
 }
- func cell_append() {cells.append($o1) 
-	return cells.count -1}
+
+objref spkgid, spktime
+spkgid = new Vector()
+spktime = new Vector()
+cgid = 0
+func cell_append() { localobj nc, nil
+	pc.set_gid2node(cgid, pc.id)
+	$o1.connect_pre(nil, nc)
+	pc.cell(cgid, nc)
+	pc.spike_record(cgid, spktime, spkgid)
+	cgid += 1
+
+	cells.append($o1) 
+	return cells.count -1
+}
+
+proc spkout() {local i  localobj f
+	f = new File()
+	f.wopen("out.dat")
+	for i=0, spkgid.size-1 {
+		f.printf("%f\t%d\n", spktime.x[i], spkgid.x[i])
+	}
+	f.close()
+}
 
 // sparse matrix to help with preventing redundant connections.
 // order is [srcindex][targetindex]
@@ -1632,6 +1666,7 @@ initNet()
 saveNet()
 run()
 SpkMx()
+spkout()
 }
 
 rrun()
