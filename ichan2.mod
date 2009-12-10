@@ -18,6 +18,7 @@ UNITS {
  
 ? interface 
 NEURON { 
+    THREADSAFE
 SUFFIX ichan2 
 USEION nat READ enat WRITE inat VALENCE 1
 USEION kf READ ekf WRITE ikf  VALENCE 1

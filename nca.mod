@@ -18,6 +18,7 @@ UNITS {
  
 ? interface 
 NEURON { 
+    THREADSAFE
 SUFFIX nca
 USEION nca READ enca WRITE inca VALENCE 2 
 RANGE  gnca

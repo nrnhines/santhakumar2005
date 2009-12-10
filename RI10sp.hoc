@@ -1574,34 +1574,46 @@ fcurrent()
 }
 //frecord_init()
 }
-proc continuerun() {local rt
-	eventcount =0
-	eventslow =1
-	stoprun =0
+
+// Modernize continuerun()
+eventslow=1
+eventcount=0
+
+proc continuerun() {local rt, rtstart, ts
+	realtime = 0  rt = screen_update_invl  rtstart = startsw()
+	eventcount=0
+	eventslow=1
+	stoprun = 0
 	if (using_cvode_) {
-	cvode.event($1)
-	}
-	while(t < $1 && stoprun == 0) {
-	step()
-	//sMatrix()
-	//VecMx()
-	rt = stopsw()
-	if (rt > realtime) {
-		realtime = rt
-		if (!stdrun_quiet) fastflushPlot()
-		doNotify()
-		if (realtime == 2 && eventcount > 50) {
-			eventslow = int(eventcount/50)+1
+		cvode.event($1)
+		ts = $1
+		if (cvode.use_local_dt) {
+			cvode.solve(ts)
+			flushPlot()
+			realtime = startsw() - rtstart
+			return
 		}
-		eventcount = 0
 	}else{
-		eventcount = eventcount +1
-		if ((eventcount%eventslow) == 0) {
-			doEvents()
+		ts = $1 - dt/2
+	}
+	while(t < ts && stoprun == 0) {
+		step()
+		//sMatrix()
+		//VecMx()
+		realtime = startsw() - rtstart
+		if (realtime >= rt) {
+//			if (!stdrun_quiet) fastflushPlot()
+			screen_update()
+			//really compute for at least screen_update_invl
+			realtime = startsw() - rtstart
+			rt = realtime + screen_update_invl
 		}
 	}
+	if (using_cvode_ && stoprun == 0) { // handle the "tstop" event
+		step() // so all recordings take place at tstop
 	}
 	flushPlot()
+	realtime = startsw() - rtstart
 }
 
 objectvar save_window_, rvp_

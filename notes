@@ -1,0 +1,98 @@
+func nc_append
+  source index $1 in cells connects to
+  target index $2 in cells at synlist index $3
+  weight $4, delay $5, threshold $6
+
+nc_append is called 14 times in proc initNet (an addition 6 calls
+are commented out) The calls are organized as projections using
+double loops with outer loop being sources of a specific cell type
+and inner loop being a specific number of randomly chosen targets
+of a specific cell type and synapses on the target.
+If a connection already exists or the number of connections to a specific
+target is too many, another is picked.
+
+There is a Random generator instance for every projection (discrete uniform)
+and they all use the same seed. The seed is derived from the processor uptime.
+
+For reproducibility, explicitly set rseed = 1. An original sim
+spike train with unknown seed is in S2I10sp.orig . A sim with
+rseed = 1 is in S2I10sp.std .
+To compare spike trains use:
+  nrngui spkplt.hoc -c 'p("S2I10sp.orig")'
+The latter spike train will be overlaid in black on a ths standard spike
+train in red.
+
+The setuptime is quite long (132 seconds)
+due to 'func is_connected()' which is used
+to prevent duplicated connections. The implmentation iterates over all
+previously constructed connections. To reduce the setup time, replace
+with a sparse matrix. If an element exists, then the connection also exists.
+This reduces the setup time to 6 seconds and
+  nrngui spkplt.hoc -c 'p("S2I10sp.txt")'
+or
+  diff S2I10sp.std S2I10sp.txt
+show quantitative identity for spike trains.
+(after trivial bug fix: In nc_append I typed
+		con_mat.x[$1][$2]
+instead of
+		con_mat.x[$1][$2] += 1
+and the first spike difference was 
+$ diff S2I10sp.std S2I10sp.txt|more
+104,108c104,108
+< 16.900000     502
+...
+> 16.600000     502
+...
+502 is a BasketCell (since idBasketCell = 500) and a quick look
+at the is_connected calls for that did not seem to be in error.
+
+Introduce an alternative way of producing spike raster output that does
+not require recording all the voltages and is directly parallelizable.
+The spike raster differs somewhat from the old method producing
+S2I10sp.txt because the latter utilizes a threashold of 0 whereas all
+the NetCon thresholds are 10mV.  The spike raster differences are much
+fewer when the raster threshold is temporarily moved to 10mV though
+still not exactly the same. out.std is now the standard spike raster.
+
+eliminate all printing to console and all creation of files except out.dat
+The serial performance is:
+mytstop  300
+setup time 0.23
+run time 191.7
+total time = 192.19
+
+Two forks are possible now: threads or MPI parallel.  The former is
+easiest if the mod files don't require any effort to be made threadsafe. 
+mkthreadsafe shows that they all, except GFluct2.mod, are in fact
+threadsafe and GFluct2 is not being used in the specific simulations, so
+we try thread parallel.  For convenient gui usage (shows running
+RealTime) we update the RI10sp.hoc version of continuerun() to the
+current stdrun version. (1 thread 183s, cvode.cache_efficient(1) 114s)
+Results for 4 threads are RealTime 61s (there are 207182 states in 528 cells
+and the load balance is 0.4%)
+and when CacheEfficient is turned on, 43s. (to get the raster, execute
+spkout() manually). However, in each case (and with 1 thread)
+a second run produces a slightly different raster beginning at 
+$ sortspike out.dat temp
+$ diff out.std temp
+1236d1235
+< 110.700000    523
+1237a1237
+> 110.800000    523
+Since successive runs produced different results it seems likely there
+is an initialization problem. In fact, clicking the Init button and then
+Init&Run produces a spike raster that is reproducible. Since gid 523
+is the first difference, there is likely no discrepancy in its spike input
+and therefore we only need to print out the initialization for 523.
+We use the utility, prcellstate.hoc, to do this. But instead of synslist,
+the model uses pre_list for a cell's list of synapses.
+load_file("prcellstate.hoc")
+finitialize(v_init)
+prcellstate(1,523)
+finitialize(v_init)
+prcellstate(2,523)
+$ diff cs*.0.1
+all the differences are related to the gskch and specifically state q
+The problem is
+        q=qinf   
+        rate(cai)

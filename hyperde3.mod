@@ -24,6 +24,7 @@ UNITS {
  
 ? interface 
 NEURON { 
+    THREADSAFE
 SUFFIX hyperde3 
 USEION hyf READ ehyf WRITE ihyf VALENCE 1
 USEION hys READ ehys WRITE ihys VALENCE 1

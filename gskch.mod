@@ -14,6 +14,7 @@ UNITS {
 }
 
 NEURON {
+    THREADSAFE
 	SUFFIX gskch
 	USEION sk READ esk WRITE isk VALENCE 1
 	USEION nca READ ncai VALENCE 2
@@ -53,8 +54,8 @@ UNITSOFF
 
 INITIAL {
 	cai = ncai + lcai + tcai	
-	q=qinf
 	rate(cai)
+	q=qinf
 	VERBATIM
 	ncai = _ion_ncai;
 	lcai = _ion_lcai;

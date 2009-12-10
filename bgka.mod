@@ -22,6 +22,7 @@ PARAMETER {
 
 
 NEURON {
+    THREADSAFE
 	SUFFIX borgka
 	USEION k READ ek WRITE ik
         RANGE gkabar,gka, ik

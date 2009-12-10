@@ -5,6 +5,7 @@ COMMENT
 ENDCOMMENT
 
 NEURON {
+    THREADSAFE
 	SUFFIX ccanl
 USEION nca READ ncai, inca, enca WRITE enca, ncai VALENCE 2
 USEION lca READ lcai, ilca, elca WRITE elca, lcai VALENCE 2
