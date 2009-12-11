@@ -96,3 +96,10 @@ all the differences are related to the gskch and specifically state q
 The problem is
         q=qinf   
         rate(cai)
+
+
+Parallelizing cell_append and nc_append allows running with MPI parallel
+With cache_efficent off we get:
+$ mpiexec -n 4 nrniv -mpi initparallel.hoc
+run time 46s
+and when on it is 37s.

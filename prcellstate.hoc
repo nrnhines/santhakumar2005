@@ -8,7 +8,7 @@ proc prcellstate() {local i, gid   localobj c, csf
 	sprint(csf_name_, "cs%d.%d.%d", $1, pc.id, pc.nhost)
 	csf = new File()
 	csf.wopen(csf_name_)
-	for pcitr(&gid, &i) {
+	for pcitr(&i, &gid) {
 		if (numarg() > 1) if (gid != $2) continue
 		c = pc.gid2obj(gid)
 		prcellstate_(c, csf, gid)
